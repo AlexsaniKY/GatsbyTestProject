@@ -1,5 +1,4 @@
 import React from "react";
-import p5 from 'p5';
 import P5Wrapper from '../components/p5wrapper';
 import SquareDemoSketch from '../sketches/squaredemosketch';
 
