@@ -1,6 +1,7 @@
 import React from "react";
 import P5Wrapper from '../components/p5wrapper';
 import SquareDemoSketch from '../sketches/squaredemosketch';
+import ZoomGridSketch from "../sketches/zoomgridsketch";
 
 export default class Sketch extends React.Component{
 
@@ -17,7 +18,7 @@ export default class Sketch extends React.Component{
 	}
 
 	pressEvent(){
-		this.state.sketch === SquareDemoSketch ? this.setState({sketch:sketch2}) : this.setState({sketch:SquareDemoSketch});
+		this.state.sketch === SquareDemoSketch ? this.setState({sketch:ZoomGridSketch}) : this.setState({sketch:SquareDemoSketch});
 	}
 
 	render () {

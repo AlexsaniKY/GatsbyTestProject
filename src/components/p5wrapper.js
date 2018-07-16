@@ -15,7 +15,7 @@ export default class P5Wrapper extends React.Component {
     //check for sketch swapping
     if(this.props.sketch !== newprops.sketch){
       this.wrapper.removeChild(this.wrapper.childNodes[0]);
-      //should this call this.canvas.remove() first ??
+      this.canvas.remove();
       this.canvas = new p5(newprops.sketch, this.wrapper);
     }
     //pass through props
