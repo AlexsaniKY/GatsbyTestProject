@@ -1,16 +1,17 @@
 export default function SquareDemoSketch (p) {
-  let rotation = 5;
+  let scale = 5;
   let sphere_rot = 0;
   let square_rot = 0;
 
   p.setup = () => {
-    p.createCanvas(800, 400, p.WEBGL)
+    p.createCanvas(800, 400, p.WEBGL);
   };
+
   
   p.propsHandler = (props) => {
-    if (props.rotation){
-      rotation = props.rotation * Math.PI / 180;
-      rotation = rotation ? rotation : 0.0001;
+    if (props.scale){
+      scale = props.scale * Math.PI / 180;
+      scale = scale ? scale : 0.0001;
     }
   };
 
@@ -21,14 +22,14 @@ export default function SquareDemoSketch (p) {
     p.background(100);
     p.noStroke();
 
-    p.scale(rotation);
+    p.scale(scale);
     p.push();
     p.stroke(200);
     p.strokeWeight(2);
     p.fill(100,0,200);
     p.translate(-150, 100);
     p.rotateX(square_rot);
-    p.rotateY(rotation);
+    p.rotateY(scale);
     p.box(100);
     p.pop();
 

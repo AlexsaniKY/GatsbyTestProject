@@ -8,24 +8,35 @@ export default class Sketch extends React.Component{
 	constructor(props) {
 		super(props);
 		this.state = {
-			rotation: 150,
+			scale: 150,
 			sketch: SquareDemoSketch,
+			mouseIn:false
 		};
 	}
 
-	rotationChange(e){
-		this.setState({rotation:e.target.value});
+	scaleChange(e){
+		this.setState({scale:e.target.value});
 	}
 
-	pressEvent(){
+	mouseEnter(e){
+		console.log("in");
+		this.setState({mouseIn: true});
+	}
+
+	mouseLeave(e){
+		console.log("out");
+		this.setState({mouseIn:false});
+	}
+
+	pressEvent(e){
 		this.state.sketch === SquareDemoSketch ? this.setState({sketch:ZoomGridSketch}) : this.setState({sketch:SquareDemoSketch});
 	}
 
 	render () {
 		return (
-			<div>
-				<P5Wrapper sketch={this.state.sketch} rotation={this.state.rotation}/>
-				<input type="range" value={this.state.rotation}  min="0"  max="360" step=".1" style={{ width:"1000px" }} onInput={this.rotationChange.bind(this)}/>
+			<div >
+				<P5Wrapper sketch={this.state.sketch} scale={this.state.scale} width="800" height="800"  onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}/>
+				<input type="range" value={this.state.scale}  min="0"  max="360"  style={{ width:"1000px" }} onInput={this.scaleChange.bind(this)}  />
 				<button onClick={this.pressEvent.bind(this)}>Change Sketch</button>
 			</div>
 		);

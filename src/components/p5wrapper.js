@@ -2,6 +2,13 @@ import React from "react";
 import p5 from 'p5';
 
 export default class P5Wrapper extends React.Component {
+  constructor(props) {
+		super(props);
+		this.state = {
+			height: 10,
+			width: 10
+		};
+	}
 
   componentDidMount() {
     this.canvas = new p5( this.props.sketch , this.wrapper);
@@ -25,6 +32,6 @@ export default class P5Wrapper extends React.Component {
   }
 
   render() {
-    return <div ref={wrapper => this.wrapper = wrapper}></div>;
+    return <div ref={wrapper => this.wrapper = wrapper} style={{height:this.state.height, width:this.state.width}}></div>;
   }
 }
