@@ -5,8 +5,6 @@ export default class P5Wrapper extends React.Component {
   constructor(props) {
 		super(props);
 		this.state = {
-			height: 10,
-			width: 10
 		};
 	}
 
@@ -32,6 +30,6 @@ export default class P5Wrapper extends React.Component {
   }
 
   render() {
-    return <div ref={wrapper => this.wrapper = wrapper} style={{height:this.state.height, width:this.state.width}}></div>;
+    return <div ref={wrapper => this.wrapper = wrapper} ></div>;
   }
 }

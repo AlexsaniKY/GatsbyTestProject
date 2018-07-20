@@ -35,7 +35,7 @@ export default class Sketch extends React.Component{
 	render () {
 		return (
 			<div >
-				<P5Wrapper sketch={this.state.sketch} scale={this.state.scale} width="800" height="800"  onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}/>
+				<P5Wrapper sketch={this.state.sketch} scale={this.state.scale} onMouseEnter={this.mouseEnter.bind(this)} onMouseLeave={this.mouseLeave.bind(this)}/>
 				<input type="range" value={this.state.scale}  min="0"  max="360"  style={{ width:"1000px" }} onInput={this.scaleChange.bind(this)}  />
 				<button onClick={this.pressEvent.bind(this)}>Change Sketch</button>
 			</div>
