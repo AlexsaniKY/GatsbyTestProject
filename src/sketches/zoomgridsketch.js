@@ -20,15 +20,15 @@ export default function ZoomGridSketch (p) {
   let mouseIn = false;
   let isClicked = false;
   let wasClicked = false;
-  let clickedX = 0;
-  let clickedY = 0;
-  let draggedX = 0;
-  let draggedY = 0;
+  let clickedX = 0.;
+  let clickedY = 0.;
+  let draggedX = 0.;
+  let draggedY = 0.;
   let pts = [];
-  let xOffset = 0;
-  let yOffset = 0;
-  let halfwidth = 0;
-  let halfheight = 0;
+  let xOffset = 0.;
+  let yOffset = 0.;
+  let halfwidth = 0.;
+  let halfheight = 0.;
 
   p.setup = () => {
     p.createCanvas(800, 800);
@@ -55,9 +55,10 @@ export default function ZoomGridSketch (p) {
 
   p.mousePressed = () => {
     if(mouseIn){
-        clickedX = p.mouseX;
-        clickedY = p.mouseY;
-        isClicked = true;
+      clickedX = p.mouseX;
+      clickedY = p.mouseY;
+      isClicked = true;
+      console.log(pts);
       return false;
     }
     return true;
@@ -73,7 +74,7 @@ export default function ZoomGridSketch (p) {
   p.draw = () => {
     mouseIn = isMouseInside(p);
 
-    
+    //input processing
     if(isClicked){
       [draggedX, draggedY] = mouseDelta(p);
       if(!wasClicked){
@@ -90,22 +91,24 @@ export default function ZoomGridSketch (p) {
 
     //push into worldspace
     p.push();
-    p.translate(halfwidth, halfwidth);
-    p.scale(scale);
-    p.translate(xOffset , yOffset );
-    
-    p.stroke(100,100,100);
-    p.strokeWeight(4);
-    for (let i = 0; i<pts.length-1; i+=2){
-      p.point(pts[i],pts[i+1]);
-    }
+    {
+      p.translate(halfwidth, halfwidth);
+      p.scale(scale);
+      p.translate(xOffset , yOffset );
+      
+      p.stroke(100,100,100);
+      p.strokeWeight(2);
+      for (let i = 0; i<pts.length-1; i+=2){
+        p.point(pts[i],pts[i+1]);
+      }
 
-    rainbowGrid(p, {
-       color: mouseIn? p.color(100,200,255) : p.color(100,100,100),
-       linewidth: 1,
-       cell:{x:10, y:10}, 
-       dims:{x:100,y:100}
-      });
+      rainbowGrid(p, {
+        color: mouseIn? p.color(100,200,255) : p.color(100,100,100),
+        linewidth: 1,
+        cell:{x:10, y:10}, 
+        dims:{x:100,y:100}
+        });
+    }
     p.pop();
     //pop into screenspace post-draw
 
