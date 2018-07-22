@@ -71,12 +71,7 @@ export default function ZoomGridSketch (p) {
 
 
   p.draw = () => {
-    p.colorMode(p.RGB);
-    p.background(100,0,150);
     mouseIn = isMouseInside(p);
-    
-    draggedX = 0;
-    draggedY = 0;
 
     
     if(isClicked){
@@ -84,14 +79,16 @@ export default function ZoomGridSketch (p) {
       if(!wasClicked){
         pts.push((clickedX - halfheight)/scale - xOffset, (clickedY - halfwidth )/scale - yOffset);
       }
+      xOffset += draggedX / scale;
+      yOffset += draggedY / scale;
     }
+    
 
-    xOffset += draggedX / scale;
-    yOffset += draggedY / scale;
+    //screenspace predraw
+    p.colorMode(p.RGB);
+    p.background(100,0,150);
 
-    
-    
-    
+    //push into worldspace
     p.push();
     p.translate(halfwidth, halfwidth);
     p.scale(scale);
@@ -110,6 +107,7 @@ export default function ZoomGridSketch (p) {
        dims:{x:100,y:100}
       });
     p.pop();
+    //pop into screenspace post-draw
 
     p.rect(p.width -20 , p.height - 20, 15, 15);
     wasClicked = isClicked;
