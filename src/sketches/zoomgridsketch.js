@@ -15,6 +15,12 @@ function mouseDelta(p){
   return [p.mouseX - p.pmouseX, p.mouseY - p.pmouseY];
 }
 
+function screenToWorld(){
+
+}
+
+function worldToScreen(){}
+
 export default function ZoomGridSketch (p) {
   let scale = 1;
   let mouseIn = false;
@@ -92,8 +98,11 @@ export default function ZoomGridSketch (p) {
     //push into worldspace
     p.push();
     {
+      //set origin to center of screen
       p.translate(halfwidth, halfwidth);
+      //zoom
       p.scale(scale);
+      //reposition
       p.translate(xOffset , yOffset );
       
       p.stroke(100,100,100);
