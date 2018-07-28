@@ -15,11 +15,7 @@ function mouseDelta(p){
   return [p.mouseX - p.pmouseX, p.mouseY - p.pmouseY];
 }
 
-function screenToWorld(){
 
-}
-
-function worldToScreen(){}
 
 export default function ZoomGridSketch (p) {
   let scale = 1;
@@ -35,6 +31,20 @@ export default function ZoomGridSketch (p) {
   let yOffset = 0.;
   let halfwidth = 0.;
   let halfheight = 0.;
+
+  function screenToWorld(x,y){
+    return [
+      (x - halfwidth  )/scale - xOffset,
+      (y - halfheight )/scale - yOffset
+    ];
+  }
+
+  function worldToScreen(x,y){
+    return [
+      scale * (x + xOffset) + halfwidth ,
+      scale * (y + yOffset) + halfheight
+    ];
+  }
 
   p.setup = () => {
     p.createCanvas(800, 800);
@@ -84,7 +94,8 @@ export default function ZoomGridSketch (p) {
     if(isClicked){
       [draggedX, draggedY] = mouseDelta(p);
       if(!wasClicked){
-        pts.push((clickedX - halfheight)/scale - xOffset, (clickedY - halfwidth )/scale - yOffset);
+        //pts.push((clickedX - halfwidth)/scale - xOffset, (clickedY - halfheight )/scale - yOffset);
+        pts.push(...screenToWorld(clickedX, clickedY));
       }
       xOffset += draggedX / scale;
       yOffset += draggedY / scale;
@@ -106,20 +117,33 @@ export default function ZoomGridSketch (p) {
       p.translate(xOffset , yOffset );
       
       p.stroke(100,100,100);
-      p.strokeWeight(2);
+      p.strokeWeight(1);
       for (let i = 0; i<pts.length-1; i+=2){
-        p.point(pts[i],pts[i+1]);
+        p.point(Math.floor(pts[i]),Math.floor(pts[i+1]));
       }
 
-      rainbowGrid(p, {
-        color: mouseIn? p.color(100,200,255) : p.color(100,100,100),
-        linewidth: 1,
-        cell:{x:10, y:10}, 
-        dims:{x:100,y:100}
-        });
+      // rainbowGrid(p, {
+      //   color: mouseIn? p.color(100,200,255) : p.color(100,100,100),
+      //   linewidth: 1,
+      //   cell:{x:10, y:10}, 
+      //   dims:{x:100,y:100}
+      //   });
+
+      function* gridLineGen(origin, interval, start, end){
+        let val = Math.ceil((start-origin)/interval)*interval + origin;
+        if(start - val < .1) val = start;
+        while(val < end){
+          yield Math.round(val);
+          val += interval;
+        }
+      }
     }
     p.pop();
     //pop into screenspace post-draw
+
+    for (let i = 0; i<pts.length-1; i+=2){
+      p.point(...worldToScreen(pts[i],pts[i+1]));
+    }
 
     p.rect(p.width -20 , p.height - 20, 15, 15);
     wasClicked = isClicked;
