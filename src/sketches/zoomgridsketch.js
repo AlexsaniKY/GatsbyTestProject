@@ -74,7 +74,7 @@ export default function ZoomGridSketch (p) {
       clickedX = p.mouseX;
       clickedY = p.mouseY;
       isClicked = true;
-      console.log(pts);
+      //console.log(pts);
       return false;
     }
     return true;
@@ -122,24 +122,44 @@ export default function ZoomGridSketch (p) {
         p.point(Math.floor(pts[i]),Math.floor(pts[i+1]));
       }
 
-      // rainbowGrid(p, {
-      //   color: mouseIn? p.color(100,200,255) : p.color(100,100,100),
-      //   linewidth: 1,
-      //   cell:{x:10, y:10}, 
-      //   dims:{x:100,y:100}
-      //   });
+      rainbowGrid(p, {
+        color: mouseIn? p.color(100,200,255) : p.color(100,100,100),
+        linewidth: 1,
+        cell:{x:100, y:100}, 
+        dims:{x:10,y:10}
+        });
 
-      function* gridLineGen(origin, interval, start, end){
+      
+
+      
+    }
+    p.pop();
+    //pop into screenspace post-draw
+    function* gridLineGen(origin, interval, start, end){
         let val = Math.ceil((start-origin)/interval)*interval + origin;
-        if(start - val < .1) val = start;
         while(val < end){
           yield Math.round(val);
           val += interval;
         }
       }
+
+    for(let i=0; i<3; i++){}
+    for(let vert of gridLineGen(worldToScreen(0,0)[0], 100*scale, 0, p.width)){
+      p.line(
+        vert, 
+        0, 
+        vert, 
+        p.height
+      );
     }
-    p.pop();
-    //pop into screenspace post-draw
+    for(let hor of gridLineGen(worldToScreen(0,0)[1], 100*scale, 0, p.height)){
+      p.line(
+        0, 
+        hor, 
+        p.width, 
+        hor
+      );
+    }
 
     for (let i = 0; i<pts.length-1; i+=2){
       p.point(...worldToScreen(pts[i],pts[i+1]));
