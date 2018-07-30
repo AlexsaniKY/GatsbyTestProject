@@ -143,24 +143,26 @@ export default function ZoomGridSketch (p) {
         }
       }
 
-    for(let i=0; i<3; i++){}
-    for(let vert of gridLineGen(worldToScreen(0,0)[0], 100*scale, 0, p.width)){
-      p.line(
-        vert, 
-        0, 
-        vert, 
-        p.height
-      );
-    }
-    for(let hor of gridLineGen(worldToScreen(0,0)[1], 100*scale, 0, p.height)){
-      p.line(
-        0, 
-        hor, 
-        p.width, 
-        hor
-      );
-    }
-
+    for(let i=1; i<4; i++){
+      p.strokeWeight(i);
+      let spacing = Math.pow(10, i)
+      for(let vert of gridLineGen(worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
+        p.line(
+          vert, 
+          0, 
+          vert, 
+          p.height
+        );
+      }
+      for(let hor of gridLineGen(worldToScreen(0,0)[1], spacing*scale, 0, p.height)){
+        p.line(
+          0, 
+          hor, 
+          p.width, 
+          hor
+        );
+      }
+  }
     for (let i = 0; i<pts.length-1; i+=2){
       p.point(...worldToScreen(pts[i],pts[i+1]));
     }
