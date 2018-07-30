@@ -143,9 +143,11 @@ export default function ZoomGridSketch (p) {
         }
       }
 
-    for(let i=1; i<4; i++){
-      p.strokeWeight(i);
-      let spacing = Math.pow(10, i)
+    let gridmin = Math.ceil(Math.log10(4/scale));
+    //console.log(gridmin);
+    for(let i=gridmin; i<gridmin+2; i++){
+      p.strokeWeight(i-gridmin + 1);
+      let spacing = Math.pow(10, i);
       for(let vert of gridLineGen(worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
         p.line(
           vert, 
