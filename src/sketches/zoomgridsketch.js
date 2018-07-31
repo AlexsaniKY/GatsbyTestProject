@@ -146,14 +146,15 @@ export default function ZoomGridSketch (p) {
 
     let gridpixelmin = 4;
     let griddecade = 10;
+    let maxdecades = 3;
     let gridexponent = Math.log(gridpixelmin/scale) / Math.log(griddecade);
     let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
     //add one to keep the lowest level from having reversed sign and undoing the 1- trick
     //mod 1 to get a value between 0-1 for alpha
     //subtract from 1 to reverse alpha fade, mult 255 to put in alpha range
     let alpha = Math.pow(Math.abs(1 - ( (1 + gridexponent) % 1) ) , 2) * 255;
-    for(let i=gridminlevel; i<gridminlevel+2; i++){
-      p.strokeWeight((i-gridminlevel)*.1 + 1);
+    for(let i=gridminlevel; i<gridminlevel + maxdecades - 1; i++){
+      p.strokeWeight((i-gridminlevel)*.5 + 1);
       p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 255));
       let spacing = Math.pow(griddecade, i);
       for(let vert of gridLineGen(worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
