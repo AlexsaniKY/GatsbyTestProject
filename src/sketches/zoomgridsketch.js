@@ -152,36 +152,39 @@ export default function ZoomGridSketch (p) {
         }
       }
 
-    let gridpixelmin = 3;
-    let griddecade = 10;
-    let maxdecades = 4;
-    let gridexponent = Math.log(gridpixelmin/scale) / Math.log(griddecade);
-    let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
-    //add one to keep the lowest level from having reversed sign and undoing the 1- trick
-    //mod 1 to get a value between 0-1 for alpha
-    //subtract from 1 to reverse alpha fade, mult 255 to put in alpha range
-    let alpha = Math.pow(Math.abs(1 - ( (1 + gridexponent) % 1) ) , 3) * 255;
-    for(let i=gridminlevel; i<gridminlevel + maxdecades - 1; i++){
-      p.strokeWeight((i-gridminlevel)*1 + 1);
-      p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 100));
-      let spacing = Math.pow(griddecade, i);
-      for(let vert of gridLineGen(worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
-        p.line(
-          vert, 
-          0, 
-          vert, 
-          p.height
-        );
+    (
+    function scaledGrid(p, {gridpixelmin = 3, griddecade = 10, maxdecades = 4, scale=1}={}){
+      let gridexponent = Math.log(gridpixelmin/scale) / Math.log(griddecade);
+      let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
+      //add one to keep the lowest level from having reversed sign and undoing the 1- trick
+      //mod 1 to get a value between 0-1 for alpha
+      //subtract from 1 to reverse alpha fade, mult 255 to put in alpha range
+      let alpha = Math.pow(Math.abs(1 - ( (1 + gridexponent) % 1) ) , 3) * 255;
+      for(let i=gridminlevel; i<gridminlevel + maxdecades - 1; i++){
+        p.strokeWeight((i-gridminlevel)*1 + 1);
+        p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 100));
+        let spacing = Math.pow(griddecade, i);
+        //TODO: handle dependency on WorldToScreen
+        for(let vert of gridLineGen(worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
+          p.line(
+            vert, 
+            0, 
+            vert, 
+            p.height
+          );
+        }
+        //TODO: handle dependency on WorldToScreen
+        for(let hor of gridLineGen(worldToScreen(0,0)[1], spacing*scale, 0, p.height)){
+          p.line(
+            0, 
+            hor, 
+            p.width, 
+            hor
+          );
+        }
       }
-      for(let hor of gridLineGen(worldToScreen(0,0)[1], spacing*scale, 0, p.height)){
-        p.line(
-          0, 
-          hor, 
-          p.width, 
-          hor
-        );
-      }
-    }
+    })(p, {gridpixelmin:3, griddecade:10, maxdecades:4,scale:scale});
+
     for (let i = 0; i<pts.length-1; i+=2){
       p.point(...worldToScreen(pts[i],pts[i+1]));
     }
