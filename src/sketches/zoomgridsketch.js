@@ -32,6 +32,14 @@ export default function ZoomGridSketch (p) {
   let halfwidth = 0.;
   let halfheight = 0.;
 
+  function scalarStW(x){
+    return x/scale;
+  }
+
+  function scalarWtS(x){
+    return x*scale;
+  }
+
   function screenToWorld(x,y){
     return [
       (x - halfwidth  )/scale - xOffset,
@@ -154,8 +162,6 @@ export default function ZoomGridSketch (p) {
     //subtract from 1 to reverse alpha fade, mult 255 to put in alpha range
     let alpha = Math.pow(Math.abs(1 - ( (1 + gridexponent) % 1) ) , 3) * 255;
     for(let i=gridminlevel; i<gridminlevel + maxdecades - 1; i++){
-      //p.strokeWeight(((i-gridminlevel)*4 - alpha/4));
-      //p.strokeWeight(i-gridexponent);
       p.strokeWeight((i-gridminlevel)*1 + 1);
       p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 100));
       let spacing = Math.pow(griddecade, i);
@@ -175,7 +181,7 @@ export default function ZoomGridSketch (p) {
           hor
         );
       }
-  }
+    }
     for (let i = 0; i<pts.length-1; i+=2){
       p.point(...worldToScreen(pts[i],pts[i+1]));
     }
