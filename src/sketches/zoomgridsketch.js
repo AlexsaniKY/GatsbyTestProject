@@ -47,7 +47,7 @@ export default function ZoomGridSketch (p) {
   }
 
   p.setup = () => {
-    p.createCanvas(800, 800);
+    p.createCanvas(1600, 800);
     halfwidth = p.width/2.;
     halfheight = p.height/2.;
   };
@@ -110,7 +110,7 @@ export default function ZoomGridSketch (p) {
     p.push();
     {
       //set origin to center of screen
-      p.translate(halfwidth, halfwidth);
+      p.translate(halfwidth, halfheight);
       //zoom
       p.scale(scale);
       //reposition
@@ -144,18 +144,20 @@ export default function ZoomGridSketch (p) {
         }
       }
 
-    let gridpixelmin = 4;
+    let gridpixelmin = 3;
     let griddecade = 10;
-    let maxdecades = 3;
+    let maxdecades = 4;
     let gridexponent = Math.log(gridpixelmin/scale) / Math.log(griddecade);
     let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
     //add one to keep the lowest level from having reversed sign and undoing the 1- trick
     //mod 1 to get a value between 0-1 for alpha
     //subtract from 1 to reverse alpha fade, mult 255 to put in alpha range
-    let alpha = Math.pow(Math.abs(1 - ( (1 + gridexponent) % 1) ) , 2) * 255;
+    let alpha = Math.pow(Math.abs(1 - ( (1 + gridexponent) % 1) ) , 3) * 255;
     for(let i=gridminlevel; i<gridminlevel + maxdecades - 1; i++){
-      p.strokeWeight((i-gridminlevel)*.5 + 1);
-      p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 255));
+      //p.strokeWeight(((i-gridminlevel)*4 - alpha/4));
+      //p.strokeWeight(i-gridexponent);
+      p.strokeWeight((i-gridminlevel)*1 + 1);
+      p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 100));
       let spacing = Math.pow(griddecade, i);
       for(let vert of gridLineGen(worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
         p.line(
