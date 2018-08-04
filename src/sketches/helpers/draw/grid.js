@@ -26,6 +26,9 @@ function grid(p,{color= 255, linewidth= 1, cell= {x:10, y:10}, dims= {x:10,y:10}
   }
 }
 
+//helper function for screenspace drawing
+//yields all values in increasing order conforming to val = origin + n*interval
+//where (start <= val <= end)
 function* gridLineGen(origin, interval, start, end){
   let val = Math.ceil((start-origin)/interval)*interval + origin;
   while(val < end){
@@ -34,6 +37,12 @@ function* gridLineGen(origin, interval, start, end){
   }
 }
 
+//draws a "view appropriate" grid in screenspace, requires current view scale to be passed, acquires position through 
+//worldspace conversions.
+//
+// gridpixelmin : smallest allowable distance between gridlines for minimum scale grid
+// griddecade   : scale difference between each grid level (10 -> 1,10,100,1000...)
+// maxdecades   : max scales of grids, 2 would have only the minimum level + 1 scaled up a size of griddecade times
 function scaledGrid(p, {gridpixelmin = 3, griddecade = 10, maxdecades = 4, scale=1}={}){
   let gridexponent = Math.log(gridpixelmin/scale) / Math.log(griddecade);
   let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
@@ -45,7 +54,6 @@ function scaledGrid(p, {gridpixelmin = 3, griddecade = 10, maxdecades = 4, scale
     p.strokeWeight((i-gridminlevel)*1 + 1);
     p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 100));
     let spacing = Math.pow(griddecade, i);
-    //TODO: handle dependency on WorldToScreen
     for(let vert of gridLineGen(p.worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
       p.line(
         vert, 
@@ -54,7 +62,6 @@ function scaledGrid(p, {gridpixelmin = 3, griddecade = 10, maxdecades = 4, scale
         p.height
       );
     }
-    //TODO: handle dependency on WorldToScreen
     for(let hor of gridLineGen(p.worldToScreen(0,0)[1], spacing*scale, 0, p.height)){
       p.line(
         0, 
