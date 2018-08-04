@@ -40,14 +40,14 @@ export default function ZoomGridSketch (p) {
     return x*scale;
   }
 
-  function screenToWorld(x,y){
+  p.screenToWorld = (x,y) => {
     return [
       (x - halfwidth  )/scale - xOffset,
       (y - halfheight )/scale - yOffset
     ];
   }
 
-  function worldToScreen(x,y){
+  p.worldToScreen = (x,y) => {
     return [
       scale * (x + xOffset) + halfwidth ,
       scale * (y + yOffset) + halfheight
@@ -165,7 +165,7 @@ export default function ZoomGridSketch (p) {
         p.stroke(p.color(0,0,0, i == gridminlevel? alpha : 100));
         let spacing = Math.pow(griddecade, i);
         //TODO: handle dependency on WorldToScreen
-        for(let vert of gridLineGen(worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
+        for(let vert of gridLineGen(p.worldToScreen(0,0)[0], spacing*scale, 0, p.width)){
           p.line(
             vert, 
             0, 
@@ -174,7 +174,7 @@ export default function ZoomGridSketch (p) {
           );
         }
         //TODO: handle dependency on WorldToScreen
-        for(let hor of gridLineGen(worldToScreen(0,0)[1], spacing*scale, 0, p.height)){
+        for(let hor of gridLineGen(p.worldToScreen(0,0)[1], spacing*scale, 0, p.height)){
           p.line(
             0, 
             hor, 
