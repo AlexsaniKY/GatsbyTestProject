@@ -114,6 +114,8 @@ export default function ZoomGridSketch (p) {
     p.colorMode(p.RGB);
     p.background(100,0,150);
 
+    scaledGrid(p, {gridpixelmin:3, griddecade:10, maxdecades:4,scale:scale});
+
     //push into worldspace
     p.push();
     {
@@ -143,9 +145,6 @@ export default function ZoomGridSketch (p) {
     }
     p.pop();
     //pop into screenspace post-draw
-
-    
-    scaledGrid(p, {gridpixelmin:3, griddecade:10, maxdecades:4,scale:scale});
 
     for (let i = 0; i<pts.length-1; i+=2){
       p.point(...p.worldToScreen(pts[i],pts[i+1]));
