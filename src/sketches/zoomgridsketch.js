@@ -1,4 +1,4 @@
-import {grid, rainbowGrid, scaledGrid} from "./helpers/draw/grid";
+import {grid, rainbowGrid, ScaledGrid} from "./helpers/draw/grid";
 
 function isMouseInside(p){
   if(
@@ -31,6 +31,8 @@ export default function ZoomGridSketch (p) {
   let yOffset = 0.;
   let halfwidth = 0.;
   let halfheight = 0.;
+
+  let scalegrid = new ScaledGrid({gridpixelmin:3, griddecade:10, maxdecades:4});
 
   function scalarStW(x){
     return x/scale;
@@ -114,7 +116,7 @@ export default function ZoomGridSketch (p) {
     p.colorMode(p.RGB);
     p.background(100,0,150);
 
-    scaledGrid(p, {gridpixelmin:3, griddecade:10, maxdecades:4,scale:scale});
+    scalegrid.draw(p, scale);
 
     //push into worldspace
     p.push();
@@ -145,6 +147,7 @@ export default function ZoomGridSketch (p) {
     }
     p.pop();
     //pop into screenspace post-draw
+    scalegrid.drawLabels(p,scale);
 
     for (let i = 0; i<pts.length-1; i+=2){
       p.point(...p.worldToScreen(pts[i],pts[i+1]));
