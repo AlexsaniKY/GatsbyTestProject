@@ -50,6 +50,7 @@ class ScaledGrid{
     this.gridpixelmin = gridpixelmin;
     this.griddecade = griddecade;
     this.maxdecades = maxdecades;
+    this.last_scale = 1;
   }
 
   draw(p, scale){
@@ -90,8 +91,22 @@ class ScaledGrid{
     }
   }
 
+  
+
   drawLabels(p, scale){
-    
+    //TODO: joint calculation for both methods should NOT occur, combine logic
+
+    // exponent required for the minimum grid size satisfying the minimum pixel setting at the current scale 
+    let gridexponent = Math.log(this.gridpixelmin/scale) / Math.log(this.griddecade);
+    // bounds the exponent to an integer >= 0
+    let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
+    throw new Error('not implemeted');
+    for(l of gridLineGen(undefined, undefined, undefined, undefined)){
+      
+      //find what scale of unit to generate
+      //use parallel gridlinegens to give both screen position and in world positions,
+        //use worldspace value as text, use screenspace value to hint position.
+      }
   }
 }
 
