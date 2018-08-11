@@ -127,31 +127,66 @@ class ScaledGrid{
     // bounds the exponent to an integer >= 0
     let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
     let spacing = Math.pow(this.griddecade, gridminlevel+1); //Math.pow(gridminlevel, gridexponent);
+    let hor_world_gen, w_h;
+    let ver_world_gen, w_v;
 
-    let world_gen = gridLineGen(
+    let hor_screen_gen, s_h;
+    let ver_screen_gen, s_v;
+
+    let world = {};
+    [world.left, world.top] = p.screenToWorld(0,0);
+    [world.right, world.bottom] = p.screenToWorld(p.width, p.height);
+
+    hor_world_gen = gridLineGen(
       0, 
       spacing, 
-      p.screenToWorld(0,0)[0], 
-      p.screenToWorld(p.width,0)[0]);
-    let w = world_gen.next();
+      world.left, 
+      world.right);
+    w_h = hor_world_gen.next();
 
-    let screen_gen = gridLineGen(
-      p.worldToScreen(w.value,0)[0], 
+    ver_world_gen = gridLineGen(
+      0, 
+      spacing, 
+      world.top, 
+      world.bottom);
+    w_v = ver_world_gen.next();
+
+    let screen = {};
+    [screen.left, screen.top] = p.worldToScreen(w_h.value, w_v.value);
+    
+
+    hor_screen_gen = gridLineGen(
+      screen.left, 
       spacing * scale, 
       0,
-      1600);
-    let s = screen_gen.next();
+      p.width);
+    s_h = hor_screen_gen.next();
+
+    ver_screen_gen = gridLineGen(
+      screen.top, 
+      spacing * scale, 
+      0,
+      p.height);
+    s_v = ver_screen_gen.next();
     
     p.fill(255);
     p.stroke(0);
     p.strokeWeight(1);
     p.textSize(18);
     p.textAlign(p.CENTER);
-    while(!w.done && !s.done){
-      p.text(w.value, s.value, 20 );
+    while(!w_h.done && !s_h.done){
+      p.text(w_h.value, s_h.value, 20 );
 
-      w = world_gen.next();
-      s = screen_gen.next();
+      w_h = hor_world_gen.next();
+      s_h = hor_screen_gen.next();
+    }
+
+    let x_pos = p.width - 20;
+    while(!w_v.done && !s_v.done){
+      p.text(w_v.value, x_pos, s_v.value);
+
+      w_v = ver_world_gen.next();
+      s_v = ver_screen_gen.next();
     }
     // for(let [w,s] of labelGen(p, {origin_1:0, interval_1:100, start_1:p.screenToWorld(0,0)[0], end_1:p.screenToWorld(p.width,0)[0], origin_2:0, scale:scale })){
     //   console.log(w,s);
