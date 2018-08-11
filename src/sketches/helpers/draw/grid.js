@@ -26,14 +26,17 @@ function grid(p,{color= 255, linewidth= 1, cell= {x:10, y:10}, dims= {x:10,y:10}
   }
 }
 
+const MAXGRIDLINES = 2000;
 //helper function for screenspace drawing
 //yields all values in increasing order conforming to val = origin + n*interval
 //where (start <= val <= end)
 function* gridLineGen(origin, interval, start, end){
+  let i=0;
   let val = Math.ceil((start-origin)/interval)*interval + origin;
-  while(val < end){
+  while(val < end && i<MAXGRIDLINES){
     yield Math.round(val);
     val += interval;
+    i+=1;
   }
 }
 
@@ -123,15 +126,39 @@ class ScaledGrid{
     let gridexponent = Math.log(this.gridpixelmin/scale) / Math.log(this.griddecade);
     // bounds the exponent to an integer >= 0
     let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
-    let spacing = Math.pow(gridminlevel, gridexponent);
+    let spacing = Math.pow(this.griddecade, gridminlevel+1); //Math.pow(gridminlevel, gridexponent);
 
+    let world_gen = gridLineGen(
+      0, 
+      spacing, 
+      p.screenToWorld(0,0)[0], 
+      p.screenToWorld(p.width,0)[0]);
+    let w = world_gen.next();
+
+    let screen_gen = gridLineGen(
+      p.worldToScreen(w.value,0)[0], 
+      spacing * scale, 
+      0,
+      1600);
+    let s = screen_gen.next();
     
-    for(let [w,s] of labelGen(p, {origin_1:0, interval_1:100, start_1:p.screenToWorld(0,0)[0], end_1:p.screenToWorld(p.width,0)[0], origin_2:0, scale:scale })){
-      console.log(w,s);
-      //find what scale of unit to generate
-      //use parallel gridlinegens to give both screen position and in world positions,
-        //use worldspace value as text, use screenspace value to hint position.
-      }
+    p.fill(255);
+    p.stroke(0);
+    p.strokeWeight(1);
+    p.textSize(18);
+    p.textAlign(p.CENTER);
+    while(!w.done && !s.done){
+      p.text(w.value, s.value, 20 );
+
+      w = world_gen.next();
+      s = screen_gen.next();
+    }
+    // for(let [w,s] of labelGen(p, {origin_1:0, interval_1:100, start_1:p.screenToWorld(0,0)[0], end_1:p.screenToWorld(p.width,0)[0], origin_2:0, scale:scale })){
+    //   console.log(w,s);
+    //   //find what scale of unit to generate
+    //   //use parallel gridlinegens to give both screen position and in world positions,
+    //     //use worldspace value as text, use screenspace value to hint position.
+    //   }
   }
 }
 

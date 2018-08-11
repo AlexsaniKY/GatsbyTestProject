@@ -74,6 +74,7 @@ export default function ZoomGridSketch (p) {
     if(mouseIn) {
       scale *= Math.pow(10, -e.delta / 1000.) ;
       scale = scale ? scale : 0.0001;
+      scale = scale > 1e-3? scale : 1e-3;
       return false;
     }
     return true;
