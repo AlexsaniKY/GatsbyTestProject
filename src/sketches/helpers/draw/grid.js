@@ -37,6 +37,31 @@ function* gridLineGen(origin, interval, start, end){
   }
 }
 
+//offset is the difference between the two origin values
+//scale is their ratio
+function* labelGen(p, {origin_1, interval_1, start_1, end_1, origin_2, scale}){
+  let world_gen = gridLineGen(
+    origin_1, 
+    interval_1, 
+    start_1, 
+    end_1);
+  let w = world_gen.next();
+  let screen_gen = gridLineGen(
+    p.worldToScreen(w.value,0)[0], 
+    interval_1 * scale, 
+    //(start_1-origin_1)*scale + origin_2, 
+    //(end_1 - origin_1)*scale + origin_2);
+    0,1600);
+  //NOTE: could be a do-while but this safeguards the first access
+  
+  let s = screen_gen.next();
+  while(!w.done && !s.done){
+    yield [w.value, s.value];
+    w = world_gen.next();
+    s = screen_gen.next();
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // a "view appropriate" grid in screenspace, requires current view scale to be passed, acquires position through 
 // worldspace conversions.
@@ -91,10 +116,6 @@ class ScaledGrid{
     }
   }
 
-  *labelGen(origin, interval){
-    yield null;
-  }
-
   drawLabels(p, scale){
     //TODO: joint calculation for both methods should NOT occur, combine logic
 
@@ -102,8 +123,11 @@ class ScaledGrid{
     let gridexponent = Math.log(this.gridpixelmin/scale) / Math.log(this.griddecade);
     // bounds the exponent to an integer >= 0
     let gridminlevel = Math.max(Math.ceil(gridexponent), 0);
-    for(l of labelGen(undefined, undefined, undefined, undefined)){
-      
+    let spacing = Math.pow(gridminlevel, gridexponent);
+
+    
+    for(let [w,s] of labelGen(p, {origin_1:0, interval_1:100, start_1:p.screenToWorld(0,0)[0], end_1:p.screenToWorld(p.width,0)[0], origin_2:0, scale:scale })){
+      console.log(w,s);
       //find what scale of unit to generate
       //use parallel gridlinegens to give both screen position and in world positions,
         //use worldspace value as text, use screenspace value to hint position.
