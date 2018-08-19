@@ -184,11 +184,17 @@ class ScaledGrid{
       s_h = hor_screen_gen.next();
     }
 
+    //span length
     let n = 3;
+    //offset, to be manipulated
     let o = 1;
+    //number of spans
     let i = Math.floor(labels.length/n);
+    //strip out span-1 for each span
     while(i--) labels.splice((i+1)*n - o, n-1);
+    //cleanup last segment
     labels.splice(0,n-1-o);
+    //draw the remaining
     for(let [text, pos] of labels) p.text(text, pos, 20);
 
     let x_pos = p.width - 20;
