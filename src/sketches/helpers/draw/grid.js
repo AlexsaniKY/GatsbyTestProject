@@ -174,12 +174,22 @@ class ScaledGrid{
     p.strokeWeight(1);
     p.textSize(18);
     p.textAlign(p.CENTER);
+
+    let labels = [];
     while(!w_h.done && !s_h.done){
-      p.text(w_h.value, s_h.value, 20 );
+      labels.push([w_h.value, s_h.value]);
+      //p.text(w_h.value, s_h.value, 20 );
 
       w_h = hor_world_gen.next();
       s_h = hor_screen_gen.next();
     }
+
+    let n = 3;
+    let o = 1;
+    let i = Math.floor(labels.length/n);
+    while(i--) labels.splice((i+1)*n - o, n-1);
+    labels.splice(0,n-1-o);
+    for(let [text, pos] of labels) p.text(text, pos, 20);
 
     let x_pos = p.width - 20;
     while(!w_v.done && !s_v.done){
