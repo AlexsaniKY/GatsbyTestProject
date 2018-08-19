@@ -32,7 +32,7 @@ export default function ZoomGridSketch (p) {
   let halfwidth = 0.;
   let halfheight = 0.;
 
-  let scalegrid = new ScaledGrid({gridpixelmin:3, griddecade:10, maxdecades:4});
+  let scalegrid = new ScaledGrid({gridpixelmin:4, griddecade:10, maxdecades:3});
 
   function scalarStW(x){
     return x/scale;
